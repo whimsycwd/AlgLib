@@ -1,5 +1,7 @@
 package com.whimsycwd.alglib;
 
+import java.util.ArrayList;
+
 /*************************************************************************
  *
  *  Limitations
@@ -45,7 +47,7 @@ public class BTree<Key extends Comparable<Key>, Value> {
 
 	// internal nodes: only use key and next
 	// external nodes: only use key and value
-	private static class Entry {
+	public static class Entry {
 		private Comparable key;
 		private Object value;
 		private Node next; // helper field to iterate over array entries
@@ -54,6 +56,11 @@ public class BTree<Key extends Comparable<Key>, Value> {
 			this.key = key;
 			this.value = value;
 			this.next = next;
+		}
+
+		@Override
+		public String toString() {
+			return "" + key;
 		}
 	}
 
@@ -71,21 +78,25 @@ public class BTree<Key extends Comparable<Key>, Value> {
 
 	/**
 	 * 
-	 * @return  return height of B-tree
+	 * @return return height of B-tree
 	 */
 	public int height() {
 		return HT;
 	}
+
 	/**
 	 * @param key
-	 * @return search for given key, return associated value; return null if no such key
+	 * @return search for given key, return associated value; return null if no
+	 *         such key
 	 */
-	// 
+	//
 	public Value get(Key key) {
 		return search(root, key, HT);
 	}
+
 	/**
 	 * auxilury function for get
+	 * 
 	 * @param x
 	 * @param key
 	 * @param ht
@@ -113,12 +124,10 @@ public class BTree<Key extends Comparable<Key>, Value> {
 	}
 
 	/**
-	 * 	insert key-value pair
-	 *  insert key must not exists.
-	 *  
-	 *  (key,null) mean delete
-	 *  A deletion, the key must have existed.
-	 *  
+	 * insert key-value pair insert key must not exists.
+	 * 
+	 * (key,null) mean delete A deletion, the key must have existed.
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -351,19 +360,10 @@ public class BTree<Key extends Comparable<Key>, Value> {
 	 *************************************************************************/
 	public static void main(String[] args) {
 		BTree<Integer, String> st = new BTree<Integer, String>();
-
-		for (int i = 0; i < 10; ++i) {
-			st.put(i, "" + i);
-		}
-		st.put(7, null);
-		st.put(9, null);
-		st.put(6, null);
-		st.put(8, null);
-		st.put(3, null);
-		st.put(4, null);
-		st.put(5, null);
-		System.out.println(st);
 		/*
+		 * for (int i = 0; i < 10; ++i) { st.put(i, "" + i); } st.put(7, null);
+		 * st.put(9, null); st.put(6, null); st.put(8, null); st.put(3, null);
+		 * st.put(4, null); st.put(5, null); System.out.println(st); /*
 		 * st.put(1, "one"); st.put(2, "twt"); st.put(3, "three"); st.put(0,
 		 * "zero"); st.put(-1, "-1"); StdOut.println(st); st.put(-2, "-2");
 		 * StdOut.println(st); StdOut.println(); st.put(-2, "-1");
@@ -399,6 +399,29 @@ public class BTree<Key extends Comparable<Key>, Value> {
 		 * StdOut.println("size:    " + st.size()); StdOut.println("height:  " +
 		 * st.height()); StdOut.println(st); StdOut.println();
 		 */
+	}
+
+	private void travase(Node h, int ht, ArrayList<Key> ret) {
+		if (ht == 0) {
+			for (int j = 0; j < h.m; j++) {
+				ret.add((Key) h.children[j].key);
+			}
+		}
+
+		// internal node
+		else {
+			for (int j = 0; j < h.m; j++) {
+
+				travase(h.children[j].next, ht - 1, ret);
+
+			}
+		}
+	}
+
+	public ArrayList<Key> travase() {
+		ArrayList<Key> ret = new ArrayList<Key>();
+		travase(root, HT, ret);
+		return ret;
 	}
 
 }
